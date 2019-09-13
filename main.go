@@ -9,6 +9,7 @@ import (
 	"encoding/json"
 
 	kafka "github.com/segmentio/kafka-go"
+	analytics "github.com/arizz96/event-forwarder/analytics"
 )
 
 func getKafkaReader(kafkaURL, topic, groupID string) *kafka.Reader {
@@ -23,6 +24,9 @@ func getKafkaReader(kafkaURL, topic, groupID string) *kafka.Reader {
 }
 
 func main() {
+	// initialize segment client
+	client := analytics.New("YOUR_WRITE_KEY")
+
 	// get kafka reader using environment variables.
 	kafkaURL := os.Getenv("kafkaURL")
 	topic := os.Getenv("topic")
@@ -40,20 +44,32 @@ func main() {
 		}
 		fmt.Printf("message at topic:%v partition:%v offset:%v	%s = %s\n", m.Topic, m.Partition, m.Offset, string(m.Key), string(m.Value))
 
-		var result map[string]interface{}
+		var result analytics.Message
 		json.Unmarshal([]byte(m.Value), &result)
 
-		fmt.Println(result)
-		fmt.Println(result["type"])
+		fmt.Println(result.Type)
 
-		switch result["type"] {
+		var msg analytics.Message
+		switch result.Type {
 		case "alias":
-
-		case "page":
+			msg = new(analytics.Alias)
 		case "group":
+			msg = new(analytics.Group)
 		case "identify":
+			msg = new(analytics.Identify)
+		case "page":
+			msg = new(analytics.Page)
 		case "track":
-
+			msg = new(analytics.Track)
 		}
+
+		// Unmarshal to type
+		err := json.Unmarshal(raw, &msg)
+		if err != nil {
+			fmt.Println(err)
+			return nil, err
+		}
+
+		client.queue(msg)
 	}
 }
