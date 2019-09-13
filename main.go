@@ -25,12 +25,12 @@ func getKafkaReader(kafkaURL, topic, groupID string) *kafka.Reader {
 
 func main() {
 	// initialize segment client
-	client := analytics.New("YOUR_WRITE_KEY")
+	client := analytics.New(os.Getenv("SEGMENT_WRITE_KEY"))
 
 	// get kafka reader using environment variables.
-	kafkaURL := os.Getenv("kafkaURL")
-	topic := os.Getenv("topic")
-	groupID := os.Getenv("groupID")
+	kafkaURL := os.Getenv("KAFKA_BROKERS_URL")
+	topic := os.Getenv("KAFKA_TOPIC")
+	groupID := os.Getenv("KAFKA_GROUP_ID")
 
 	reader := getKafkaReader(kafkaURL, topic, groupID)
 
