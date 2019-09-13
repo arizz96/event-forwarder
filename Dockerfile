@@ -9,14 +9,11 @@ RUN apk update && apk add --no-cache git
 
 WORKDIR /app
 
-COPY go.mod .
-COPY go.sum .
-
-RUN go mod download
+# Build the binary.
+RUN go get "github.com/jehiah/go-strftime" "github.com/segmentio/backo-go" "github.com/xtgo/uuid" "github.com/segmentio/kafka-go"
 
 COPY . .
 
-# Build the binary.
 RUN CGO_ENABLED=0 GOOS=linux go build -o main
 
 #####################################

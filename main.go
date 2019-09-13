@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 
 	kafka "github.com/segmentio/kafka-go"
-	analytics "github.com/arizz96/event-forwarder/analytics"
+	"./analytics"
 )
 
 func getKafkaReader(kafkaURL, topic, groupID string) *kafka.Reader {
@@ -49,7 +49,7 @@ func main() {
 
 		fmt.Println(result.Type)
 
-		var msg analytics.Message
+		var msg analytics.MessageInterface
 		switch result.Type {
 		case "alias":
 			msg = new(analytics.Alias)
@@ -64,12 +64,12 @@ func main() {
 		}
 
 		// Unmarshal to type
-		err := json.Unmarshal(raw, &msg)
+		err = json.Unmarshal(m.Value, &msg)
 		if err != nil {
 			fmt.Println(err)
-			return nil, err
+			return
 		}
 
-		client.queue(msg)
+		client.Queue(msg)
 	}
 }

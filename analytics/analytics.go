@@ -8,7 +8,6 @@ import (
 
 	"bytes"
 	"encoding/json"
-	"errors"
 	"log"
 	"net/http"
 	"time"
@@ -36,7 +35,7 @@ var DefaultContext = map[string]interface{}{
 var Backo = backo.DefaultBacko()
 
 // Message interface.
-type message interface {
+type MessageInterface interface {
 	setMessageId(string)
 	setTimestamp(string)
 }
@@ -163,7 +162,7 @@ func (c *Client) startLoop() {
 }
 
 // Queue message.
-func (c *Client) queue(msg message) {
+func (c *Client) Queue(msg MessageInterface) {
 	c.once.Do(c.startLoop)
 	msg.setMessageId(c.uid())
 	msg.setTimestamp(timestamp(c.now()))
