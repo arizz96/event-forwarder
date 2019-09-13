@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"encoding/json"
 
 	kafka "github.com/segmentio/kafka-go"
 )
@@ -44,5 +45,15 @@ func main() {
 
 		fmt.Println(result)
 		fmt.Println(result["type"])
+
+		switch result["type"] {
+		case "alias":
+
+		case "page":
+		case "group":
+		case "identify":
+		case "track":
+
+		}
 	}
 }
