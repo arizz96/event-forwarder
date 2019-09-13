@@ -38,5 +38,11 @@ func main() {
 			log.Fatalln(err)
 		}
 		fmt.Printf("message at topic:%v partition:%v offset:%v	%s = %s\n", m.Topic, m.Partition, m.Offset, string(m.Key), string(m.Value))
+
+		var result map[string]interface{}
+		json.Unmarshal([]byte(m.Value), &result)
+
+		fmt.Println(result)
+		fmt.Println(result["type"])
 	}
 }
