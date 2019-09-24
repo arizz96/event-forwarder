@@ -47,29 +47,6 @@ func main() {
 		var result analytics.Message
 		json.Unmarshal([]byte(m.Value), &result)
 
-		fmt.Println(result.Type)
-
-		var msg analytics.MessageInterface
-		switch result.Type {
-		case "alias":
-			msg = new(analytics.Alias)
-		case "group":
-			msg = new(analytics.Group)
-		case "identify":
-			msg = new(analytics.Identify)
-		case "page":
-			msg = new(analytics.Page)
-		case "track":
-			msg = new(analytics.Track)
-		}
-
-		// Unmarshal to type
-		err = json.Unmarshal(m.Value, &msg)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-
-		client.Queue(msg)
+		client.Enqueue(result)
 	}
 }
