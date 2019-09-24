@@ -7,6 +7,8 @@ import (
 	"os"
 	"strings"
 	"encoding/json"
+	"net/http"
+	"crypto/tls"
 
 	kafka "github.com/segmentio/kafka-go"
 	"gopkg.in/segmentio/analytics-go.v3"
@@ -29,11 +31,7 @@ func getKafkaReader(kafkaURL, topic, groupID string) *kafka.Reader {
 
 func main() {
 	// initialize segment client
-	client := analytics.NewWithConfig(os.Getenv("SEGMENT_WRITE_KEY"), Config{
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify : true},
-		}
-	})
+	client, _ := analytics.NewWithConfig(os.Getenv("SEGMENT_WRITE_KEY"), analytics.Config{ Transport: &http.Transport{ TLSClientConfig: &tls.Config{InsecureSkipVerify : true} } })
 
 	// get kafka reader using environment variables.
 	kafkaURL := os.Getenv("KAFKA_BROKERS_URL")
