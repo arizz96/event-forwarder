@@ -13,7 +13,7 @@ import (
 )
 
 type TypeMessage struct {
-	Type      string `json:"type,omitempty"`
+	Type string `json:"type,omitempty"`
 }
 
 func getKafkaReader(kafkaURL, topic, groupID string) *kafka.Reader {
@@ -29,7 +29,11 @@ func getKafkaReader(kafkaURL, topic, groupID string) *kafka.Reader {
 
 func main() {
 	// initialize segment client
-	client := analytics.New(os.Getenv("SEGMENT_WRITE_KEY"))
+	client := analytics.NewWithConfig(os.Getenv("SEGMENT_WRITE_KEY"), Config{
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify : true},
+		}
+	})
 
 	// get kafka reader using environment variables.
 	kafkaURL := os.Getenv("KAFKA_BROKERS_URL")
