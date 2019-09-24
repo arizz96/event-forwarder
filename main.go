@@ -9,8 +9,12 @@ import (
 	"encoding/json"
 
 	kafka "github.com/segmentio/kafka-go"
-	"./analytics"
+	"gopkg.in/segmentio/analytics-go.v3"
 )
+
+type TypeMessage struct {
+	Type      string `json:"type,omitempty"`
+}
 
 func getKafkaReader(kafkaURL, topic, groupID string) *kafka.Reader {
 	brokers := strings.Split(kafkaURL, ",")
@@ -44,9 +48,32 @@ func main() {
 		}
 		fmt.Printf("message at topic:%v partition:%v offset:%v	%s = %s\n", m.Topic, m.Partition, m.Offset, string(m.Key), string(m.Value))
 
-		var result analytics.Message
+		var result TypeMessage
 		json.Unmarshal([]byte(m.Value), &result)
 
-		client.Enqueue(result)
+		fmt.Println(result.Type)
+
+		var msg analytics.Message
+		switch result.Type {
+		case "alias":
+			msg = new(analytics.Alias)
+		case "group":
+			msg = new(analytics.Group)
+		case "identify":
+			msg = new(analytics.Identify)
+		case "page":
+			msg = new(analytics.Page)
+		case "track":
+			msg = new(analytics.Track)
+		}
+
+		// Unmarshal to type
+		err = json.Unmarshal(m.Value, &msg)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		client.Enqueue(msg)
 	}
 }
