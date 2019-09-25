@@ -10,7 +10,7 @@ RUN apk update && apk add --no-cache git
 WORKDIR /app
 
 # Build the binary.
-RUN go get "github.com/segmentio/kafka-go" "gopkg.in/segmentio/analytics-go.v3"
+RUN go get "github.com/segmentio/kafka-go" "gopkg.in/arizz96/analytics-go.v3"
 
 COPY . .
 

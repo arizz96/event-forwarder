@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"crypto/tls"
 
-	kafka "github.com/segmentio/kafka-go"
-	"gopkg.in/segmentio/analytics-go.v3"
+	"github.com/segmentio/kafka-go"
+	"gopkg.in/arizz96/analytics-go.v3"
 )
 
 type TypeMessage struct {
