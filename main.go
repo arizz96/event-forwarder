@@ -65,6 +65,8 @@ func main() {
 			msg = new(analytics.Identify)
 		case "page":
 			msg = new(analytics.Page)
+		case "screen":
+			msg = new(analytics.Screen)
 		case "track":
 			msg = new(analytics.Track)
 		}
